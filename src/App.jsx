@@ -6,7 +6,7 @@ const portfolioData = {
     name: "Riccardo Mantelli",
     title: "Software Developer",
     bio: "Backend Developer specializing in C# and ASP.NET Core, crafting scalable and clean solutions. Let's connect and explore new opportunities!",
-    skills: ["C#", ".NET", "ASP.NET Core", "SQL Server", "PostgreSQL", "Git", "Docker", "Design Patterns", "REST APIs", "Unit Testing", "Integration Testing"],
+    skills: ["C#", "C", "SQL", "JS", ".NET", "ASP.NET Core", "SQL Server", "PostgreSQL", "Git", "Docker", "Design Patterns", "REST APIs", "Unit Testing", "Integration Testing"],
     contact: { email: "mantelli96@libero.it", github: "https://github.com/Buutyful", location: "Florence, Italy" }
 };
 
