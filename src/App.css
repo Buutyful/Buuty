@@ -15,8 +15,8 @@ body { font-family: 'Outfit', 'Inter', sans-serif; line-height: 1.6; background-
 /* === CSS VARIABLES === */
 :root {
     --color-bg: #030514; --color-primary: hsl(260, 85%, 65%); --color-secondary: hsl(180, 85%, 50%);
-    --color-accent: hsl(330, 90%, 60%); --color-text: #bdc1d1; --color-text-heading: #ffffff;
-    --color-text-muted: #8a94ad; --color-border: hsla(225, 15%, 50%, 0.2);
+    --color-accent: hsl(330, 90%, 60%); --color-text: #f2f2f5; --color-text-heading: #ffffff;
+    --color-text-muted: #ffffff; --color-border: hsla(225, 15%, 50%, 0.2);
     --color-card-bg: hsla(240, 20%, 10%, 0.7); --shadow-color: 240deg 30% 5%;
     --shadow-elevation-low: 0.3px 0.5px 0.7px hsl(var(--shadow-color) / 0.34), 0.4px 0.8px 1px -1.2px hsl(var(--shadow-color) / 0.34), 1px 2px 2.5px -2.5px hsl(var(--shadow-color) / 0.34);
     --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
