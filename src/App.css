@@ -1,0 +1,320 @@
+/* --- Global Styles & Resets --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #f0f0f0;
+  background-color: #0a0a1a; /* Fallback */
+  line-height: 1.6;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* --- Animated Gradient Background --- */
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.portfolio-container {
+  min-height: 100vh;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradientAnimation 25s ease infinite;
+  overflow: hidden; /* Contains elements */
+}
+
+/* --- Section Styling --- */
+.section {
+  min-height: 95vh; /* Make sections take up most of the viewport height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  text-align: center;
+  position: relative; /* For absolute positioning like scroll indicator */
+  opacity: 0; /* Initially hidden for animation */
+  transform: translateY(30px); /* Start slightly lower */
+  animation: fadeIn forwards 0.8s ease-out;
+  animation-delay: 0.2s; /* Slight delay for effect */
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-title {
+  font-size: 2.8rem;
+  margin-bottom: 40px;
+  font-weight: 700;
+  position: relative;
+  color: #fff;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #e73c7e, #ee7752);
+  border-radius: 2px;
+  margin: 10px auto 0;
+}
+
+/* --- Hero Section --- */
+.hero-section {
+  min-height: 100vh; /* Ensure hero fills the viewport */
+  justify-content: center; /* Center content vertically */
+}
+
+.hero-content {
+  max-width: 800px;
+  animation: textFocusIn 1s cubic-bezier(0.550, 0.085, 0.680, 0.530) both; /* Subtle text animation */
+  margin-bottom: 60px; /* Space for scroll indicator */
+}
+
+.hero-name {
+  font-size: clamp(3rem, 10vw, 6rem); /* Responsive font size */
+  font-weight: 800;
+  margin-bottom: 10px;
+  letter-spacing: -1px;
+  color: #ffffff;
+  text-shadow: 3px 3px 15px rgba(0, 0, 0, 0.3);
+}
+
+.hero-title {
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  font-weight: 400;
+  margin-bottom: 20px;
+  color: #e0e0ff; /* Slightly different color */
+  text-shadow: 1px 1px 8px rgba(0, 0, 0, 0.2);
+}
+
+.hero-bio {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  max-width: 600px;
+  margin: 0 auto;
+  color: #d0d0f0;
+}
+
+/* Simple Text Focus In Animation */
+@keyframes textFocusIn {
+  0% { filter: blur(12px); opacity: 0; }
+  100% { filter: blur(0px); opacity: 1; }
+}
+
+/* Scroll Down Indicator */
+.scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+.scroll-indicator span {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-bottom: 2px solid #fff;
+    border-right: 2px solid #fff;
+    transform: rotate(45deg);
+    margin: -5px;
+    animation: scrollAnimation 2s infinite;
+    opacity: 0;
+}
+.scroll-indicator span:nth-child(1) { animation-delay: 0s; }
+.scroll-indicator span:nth-child(2) { animation-delay: .15s; }
+.scroll-indicator span:nth-child(3) { animation-delay: .3s; }
+
+@keyframes scrollAnimation {
+  0% { opacity: 0; transform: rotate(45deg) translate(-15px, -15px); }
+  50% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(45deg) translate(10px, 10px); }
+}
+
+/* --- Projects Section --- */
+.projects-section {
+  background-color: rgba(0, 0, 0, 0.1); /* Subtle background difference */
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  width: 100%;
+  padding: 0 20px; /* Add padding on the grid */
+}
+
+.project-card {
+  background: rgba(255, 255, 255, 0.08); /* Frosted glass effect */
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 25px;
+  text-align: left;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none; /* Remove underline from link */
+  color: inherit; /* Inherit text color */
+  display: flex; /* Enable flex for layout */
+  flex-direction: column; /* Stack elements vertically */
+  justify-content: space-between; /* Push tech tags down */
+  min-height: 220px; /* Ensure cards have a consistent minimum height */
+}
+
+.project-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.project-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.project-card p {
+  font-size: 0.95rem;
+  color: #d0d0f0;
+  margin-bottom: 15px; /* Add space before tags */
+  flex-grow: 1; /* Allow description to take up space */
+}
+
+.project-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto; /* Push to the bottom */
+}
+
+.tech-tag {
+  background-color: rgba(23, 166, 213, 0.5); /* Semi-transparent tag bg */
+  color: #e0faff;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+/* --- Skills Section --- */
+.skills-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  max-width: 900px;
+  margin-top: 20px;
+}
+
+.skill-tag {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: default; /* Indicate it's not clickable */
+  animation: float 6s ease-in-out infinite; /* Subtle floating animation */
+}
+
+/* Stagger the floating animation */
+.skills-cloud .skill-tag:nth-child(3n) { animation-delay: 0.5s; }
+.skills-cloud .skill-tag:nth-child(4n) { animation-delay: 1s; }
+.skills-cloud .skill-tag:nth-child(5n) { animation-delay: 0.2s; }
+
+.skill-tag:hover {
+  transform: scale(1.1);
+  background-color: rgba(231, 60, 126, 0.7); /* Change color on hover */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  animation-play-state: paused; /* Pause floating on hover */
+}
+
+/* Floating Animation */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+/* --- Footer --- */
+.footer-hint {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+    margin-top: 40px; /* Space above footer */
+    color: #a0a0c0;
+    font-size: 0.9rem;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+  .section {
+    padding: 40px 15px;
+  }
+
+  .section-title {
+    font-size: 2.2rem;
+  }
+
+  .hero-name {
+    font-size: clamp(2.5rem, 12vw, 4rem);
+  }
+
+  .hero-title {
+    font-size: clamp(1rem, 5vw, 1.4rem);
+  }
+
+  .hero-bio {
+    font-size: clamp(0.9rem, 3vw, 1rem);
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr; /* Stack projects on smaller screens */
+    gap: 20px;
+    padding: 0 10px;
+  }
+
+  .project-card {
+    padding: 20px;
+  }
+
+  .skills-cloud {
+    gap: 10px;
+  }
+
+  .skill-tag {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+    .section-title {
+        font-size: 1.8rem;
+    }
+
+    .scroll-indicator {
+      bottom: 15px; /* Adjust scroll indicator position */
+    }
+}
