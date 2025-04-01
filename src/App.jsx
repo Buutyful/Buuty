@@ -44,37 +44,148 @@ const GitHubIcon = () => (
 
 function App() {
     const canvasRef = useRef(null);
+// --- Particle Effect Logic ---
+useEffect(() => {
+  const canvas = canvasRef.current; if (!canvas) return; const ctx = canvas.getContext('2d'); let animationFrameId; let particlesArray = []; const mousePos = { x: undefined, y: undefined }; let resizeTimeout;
+  const handleResize = () => { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => { if (!canvas) return; canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles(); }, 150); };
+  const handleMouseMove = (event) => { mousePos.x = event.clientX; mousePos.y = event.clientY; };
+  const handleMouseOut = () => { mousePos.x = undefined; mousePos.y = undefined; };
 
-    // --- Particle Effect Logic ---
-       // --- Particle Effect Logic ---
-       useEffect(() => {
-        const canvas = canvasRef.current; if (!canvas) return; const ctx = canvas.getContext('2d'); let animationFrameId; let particlesArray = []; const mousePos = { x: undefined, y: undefined }; let resizeTimeout; const handleResize = () => { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => { if (!canvas) return; canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles(); }, 150); }; const handleMouseMove = (event) => { mousePos.x = event.clientX; mousePos.y = event.clientY; }; const handleMouseOut = () => { mousePos.x = undefined; mousePos.y = undefined; }; class Particle { constructor(x, y, size, color, weight) { this.x = x; this.y = y; this.size = size; this.color = color; this.weight = weight; this.baseX = this.x; this.baseY = this.y; this.density = (Math.random() * 155) + 5; } draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.closePath(); ctx.fill(); } update() { if (mousePos.x !== undefined && mousePos.y !== undefined) { let dx = mousePos.x - this.x; let dy = mousePos.y - this.y; let distance = Math.hypot(dx, dy); let forceDirectionX = dx / distance; let forceDirectionY = dy / distance; let maxDistance = 80; let force = (maxDistance - distance) / maxDistance; if(distance < maxDistance) { let directionX = forceDirectionX * force * this.density * 0.6; let directionY = forceDirectionY * force * this.density * 0.6; this.x -= directionX; this.y -= directionY; } else { this.returnToBase(); } } else { this.returnToBase(); } } returnToBase() { if (this.x !== this.baseX) { this.x -= (this.x - this.baseX) / 20; } if (this.y !== this.baseY) { this.y -= (this.y - this.baseY) / 20; } } }
-        function initParticles() {
-            particlesArray = [];
-            const particleColors = ['rgba(0, 255, 255, 0.3)', 'rgba(236, 72, 153, 0.3)', 'rgba(168, 85, 247, 0.3)', 'rgba(255, 255, 255, 0.15)'];
-            if (!canvas) return;
-            const viewportArea = canvas.width * canvas.height;
-            // You might want to slightly decrease the number of particles if bigger ones feel too crowded
-            const particlesPerPixelRatio = Math.max(1, Math.min(10, 1 / (window.devicePixelRatio || 1))) * 8;
-            const numParticlesRaw = viewportArea / (50 * 50) * particlesPerPixelRatio;
-            const numParticles = Math.max(80, Math.min(800, Math.floor(numParticlesRaw))); // Keep particle count same for now
+  class Particle {
+      constructor(x, y, size, color, weight) {
+          this.x = x;
+          this.y = y;
+          this.size = size;
+          this.color = color;
+          this.weight = weight; // Weight influences mouse repulsion strength
+          // this.baseX = x; // Keep base if needed for other effects, but not for return
+          // this.baseY = y;
+          this.density = (Math.random() * 15) + 1; // Reduced density range for mouse interaction
 
-            for(let i = 0; i < numParticles; i++){
-                // ***** THIS LINE IS CHANGED *****
-                let size = (Math.random() * 5.0) + 1.0; // New size range: 1.0 to almost 3.0
-                // ********************************
-                let x = Math.random() * canvas.width;
-                let y = Math.random() * canvas.height;
-                let color = particleColors[Math.floor(Math.random() * particleColors.length)];
-                let weight = Math.random() * 4.5 + 0.1; // Keep weight the same
-                particlesArray.push(new Particle(x, y, size, color, weight));
-            }
-        }
-        function animate() { if (!canvas) return; ctx.clearRect(0, 0, canvas.width, canvas.height); for (let i = 0; i < particlesArray.length; i++){ particlesArray[i].update(); particlesArray[i].draw(); } connectParticles(); animationFrameId = requestAnimationFrame(animate); } function connectParticles(){ let opacityValue = 1; for (let a = 0; a < particlesArray.length; a++){ for (let b = a + 1; b < particlesArray.length; b++){ let distance = Math.hypot(particlesArray[a].x - particlesArray[b].x, particlesArray[a].y - particlesArray[b].y); let maxLineDistance = 70; if (distance < maxLineDistance){ opacityValue = 1 - (distance / maxLineDistance); ctx.strokeStyle = `rgba(100, 150, 255, ${opacityValue * 0.03})`; ctx.lineWidth = 0.2; ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke(); } } } }
-        handleResize(); animate();
-        window.addEventListener('resize', handleResize); window.addEventListener('mousemove', handleMouseMove); window.addEventListener('mouseout', handleMouseOut);
-        return () => { window.removeEventListener('resize', handleResize); window.removeEventListener('mousemove', handleMouseMove); window.removeEventListener('mouseout', handleMouseOut); cancelAnimationFrame(animationFrameId); clearTimeout(resizeTimeout); }
-    }, []);
+          // *** NEW: Add velocity for independent movement ***
+          this.driftSpeed = 0.2; // Control overall slow drift speed - adjust this value!
+          this.dx = (Math.random() - 0.5) * this.driftSpeed; // Random horizontal velocity (-0.1 to +0.1)
+          this.dy = (Math.random() - 0.5) * this.driftSpeed; // Random vertical velocity (-0.1 to +0.1)
+      }
+
+      draw() {
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.closePath();
+          ctx.fill();
+      }
+
+      update() {
+          let mousePushX = 0;
+          let mousePushY = 0;
+
+          // Calculate mouse repulsion force if mouse is present and close
+          if (mousePos.x !== undefined && mousePos.y !== undefined) {
+              let dxMouse = mousePos.x - this.x;
+              let dyMouse = mousePos.y - this.y;
+              let distance = Math.hypot(dxMouse, dyMouse);
+              let maxDistance = 100; // Interaction radius (slightly increased)
+
+              if (distance < maxDistance) {
+                  let forceDirectionX = dxMouse / distance;
+                  let forceDirectionY = dyMouse / distance;
+                  let force = (maxDistance - distance) / maxDistance;
+                  // Calculate the push amount based on density/weight
+                  // Increase multiplier slightly if repulsion feels weak
+                  mousePushX = forceDirectionX * force * this.density * 0.8;
+                  mousePushY = forceDirectionY * force * this.density * 0.8;
+              }
+          }
+
+          // *** Apply constant drift ***
+          this.x += this.dx;
+          this.y += this.dy;
+
+          // *** Apply mouse push (subtract the calculated push) ***
+          this.x -= mousePushX;
+          this.y -= mousePushY;
+
+          // *** Boundary Check (Wrapping) ***
+          // If particle goes off left edge, wrap to right edge
+          if (this.x + this.size < 0) {
+              this.x = canvas.width + this.size;
+          }
+          // If particle goes off right edge, wrap to left edge
+          else if (this.x - this.size > canvas.width) {
+              this.x = 0 - this.size;
+          }
+          // If particle goes off top edge, wrap to bottom edge
+          if (this.y + this.size < 0) {
+              this.y = canvas.height + this.size;
+          }
+          // If particle goes off bottom edge, wrap to top edge
+          else if (this.y - this.size > canvas.height) {
+              this.y = 0 - this.size;
+          }
+      }
+
+      
+  }
+
+  function initParticles() {
+      particlesArray = [];
+      const particleColors = ['rgba(0, 255, 255, 0.3)', 'rgba(236, 72, 153, 0.3)', 'rgba(168, 85, 247, 0.3)', 'rgba(255, 255, 255, 0.15)'];
+      if (!canvas) return;
+      const viewportArea = canvas.width * canvas.height;
+      const particlesPerPixelRatio = Math.max(1, Math.min(8, 1 / (window.devicePixelRatio || 1))) * 6; // Adjusted density slightly
+      const numParticlesRaw = viewportArea / (60 * 60) * particlesPerPixelRatio; // Slightly fewer particles maybe needed
+      const numParticles = Math.max(60, Math.min(600, Math.floor(numParticlesRaw))); // Adjusted particle count range
+
+      for(let i = 0; i < numParticles; i++){
+          let size = (Math.random() * 5.0) + 1.0; // Keeping the bigger size
+          let x = Math.random() * canvas.width;
+          let y = Math.random() * canvas.height;
+          let color = particleColors[Math.floor(Math.random() * particleColors.length)];
+          let weight = (Math.random() * 1.0) + 0.5; // Adjusted weight range
+          particlesArray.push(new Particle(x, y, size, color, weight));
+      }
+  }
+
+  function animate() {
+      if (!canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particlesArray.length; i++){
+          particlesArray[i].update();
+          particlesArray[i].draw();
+      }
+      connectParticles(); // Keep connecting lines if desired
+      animationFrameId = requestAnimationFrame(animate);
+  }
+
+  // Connect particles function remains the same
+  function connectParticles(){
+       let opacityValue = 1;
+       for (let a = 0; a < particlesArray.length; a++){
+           for (let b = a + 1; b < particlesArray.length; b++){
+               let distance = Math.hypot(particlesArray[a].x - particlesArray[b].x, particlesArray[a].y - particlesArray[b].y);
+               let maxLineDistance = 70; // Connection distance remains same
+               if (distance < maxLineDistance){
+                   opacityValue = 1 - (distance / maxLineDistance);
+                   // Make lines slightly more visible if needed
+                   ctx.strokeStyle = `rgba(100, 150, 255, ${opacityValue * 0.05})`; // Increased opacity multiplier
+                   ctx.lineWidth = 0.2; // Line width remains same
+                   ctx.beginPath();
+                   ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                   ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                   ctx.stroke();
+               }
+           }
+       }
+  }
+
+  handleResize();
+  animate();
+  window.addEventListener('resize', handleResize);
+  window.addEventListener('mousemove', handleMouseMove);
+  window.addEventListener('mouseout', handleMouseOut);
+  return () => { window.removeEventListener('resize', handleResize); window.removeEventListener('mousemove', handleMouseMove); window.removeEventListener('mouseout', handleMouseOut); cancelAnimationFrame(animationFrameId); clearTimeout(resizeTimeout); }
+}, []);
 
     return (
         <div className="portfolio-wrapper single-screen">
