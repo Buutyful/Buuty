@@ -239,13 +239,13 @@ img, svg {
     box-shadow: var(--shadow-md);
 }
 
-@media (max-width: 768px) {
+/*@media (max-width: 768px) {
     .skills-section {
         padding: 1.5rem;
-        background: var(--color-background-alt); /* Fallback for less capable browsers */
+        background: var(--color-background-alt); 
         backdrop-filter: none;
     }
-}
+}*/
 
 .section-title {
     text-align: center;
