@@ -141,7 +141,7 @@ const ContactFooter = ({ contact, name }) => (
     </footer>
 );
 
-// --- Particle Canvas Component (Integrated) ---
+// --- Particle Canvas Component ---
 const ParticleCanvas = () => {
     const canvasRef = useRef(null);
     const animationFrameId = useRef(null);
@@ -160,11 +160,11 @@ const ParticleCanvas = () => {
     }, []);
 
     class Particle {
-         constructor(x, y, size, color, weight, canvasWidth, canvasHeight) {
+        constructor(x, y, size, color, weight, canvasWidth, canvasHeight) {
             this.x = x;
             this.y = y;
             this.size = size;
-            this.baseColor = color; // Store the base HSL(A) string
+            this.baseColor = color;
             this.weight = weight;
             this.density = (Math.random() * 25) + 2;
             this.baseDriftSpeed = 0.15;
@@ -172,11 +172,9 @@ const ParticleCanvas = () => {
             this.dy = (Math.random() - 0.5) * this.baseDriftSpeed;
             this.canvasWidth = canvasWidth;
             this.canvasHeight = canvasHeight;
-            // Extract base alpha from hsla string, default to 0.5 if not present
             const alphaMatch = this.baseColor.match(/hsla?\([^,]+,[^,]+,[^,]+,?\s*([0-9.]+)\s*\)/);
             this.baseAlpha = alphaMatch ? parseFloat(alphaMatch[1]) : 0.5;
             this.currentAlpha = this.baseAlpha;
-            // Extract HSL values for potential color manipulation later (optional)
             const hslMatch = this.baseColor.match(/hsla?\((\d+),\s*([\d.]+)%,\s*([\d.]+)%/);
             this.hue = hslMatch ? parseInt(hslMatch[1]) : 0;
             this.saturation = hslMatch ? parseFloat(hslMatch[2]) : 0;
@@ -184,35 +182,33 @@ const ParticleCanvas = () => {
         }
 
         draw(ctx) {
-             let distance = Infinity;
-             if (mousePos.current.x !== undefined) {
-                 distance = Math.hypot(mousePos.current.x - this.x, mousePos.current.y - this.y);
-             }
-             const fadeRadius = 180; // Slightly larger interaction radius for visibility fade
-             // Fade out alpha when mouse is close, ensure it doesn't exceed baseAlpha
-             this.currentAlpha = Math.min(this.baseAlpha, this.baseAlpha * (distance / fadeRadius));
-
-             ctx.fillStyle = `hsla(${this.hue}, ${this.saturation}%, ${this.lightness}%, ${this.currentAlpha})`;
-             ctx.beginPath();
-             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-             ctx.closePath();
-             ctx.fill();
+            let distance = Infinity;
+            if (mousePos.current.x !== undefined) {
+                distance = Math.hypot(mousePos.current.x - this.x, mousePos.current.y - this.y);
+            }
+            const fadeRadius = 180;
+            this.currentAlpha = Math.min(this.baseAlpha, this.baseAlpha * (distance / fadeRadius));
+            ctx.fillStyle = `hsla(${this.hue}, ${this.saturation}%, ${this.lightness}%, ${this.currentAlpha})`;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.fill();
         }
 
         update() {
             let mousePushX = 0;
             let mousePushY = 0;
-            const interactionRadius = 110; // Radius mouse interacts (push effect)
+            const interactionRadius = 110;
 
             if (mousePos.current.x !== undefined && mousePos.current.y !== undefined) {
                 let dxMouse = this.x - mousePos.current.x;
                 let dyMouse = this.y - mousePos.current.y;
                 let distance = Math.hypot(dxMouse, dyMouse);
 
-                if (distance > 0 && distance < interactionRadius) { // Check distance > 0
+                if (distance > 0 && distance < interactionRadius) {
                     let forceDirectionX = dxMouse / distance;
                     let forceDirectionY = dyMouse / distance;
-                    let force = (interactionRadius - distance) / interactionRadius * this.density * 0.15; // Slightly increased force
+                    let force = (interactionRadius - distance) / interactionRadius * this.density * 0.15;
                     mousePushX = forceDirectionX * force;
                     mousePushY = forceDirectionY * force;
                 }
@@ -221,14 +217,12 @@ const ParticleCanvas = () => {
             this.x += this.dx + mousePushX;
             this.y += this.dy + mousePushY;
 
-            // Boundary checks (Wrap around)
             if (this.x + this.size < 0) this.x = this.canvasWidth + this.size;
             else if (this.x - this.size > this.canvasWidth) this.x = 0 - this.size;
             if (this.y + this.size < 0) this.y = this.canvasHeight + this.size;
             else if (this.y - this.size > this.canvasHeight) this.y = 0 - this.size;
         }
     }
-
 
     const initParticles = useCallback((canvas) => {
         if (!canvas) return;
@@ -239,15 +233,14 @@ const ParticleCanvas = () => {
             'hsla(30, 80%, 70%, 0.25)',
             'hsla(0, 0%, 90%, 0.20)',
         ];
-         const particleDensityFactor = 12000; // Lower value = more particles
+        const particleDensityFactor = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--particle-density')) || 8000;
         const numParticles = Math.floor((canvas.width * canvas.height) / particleDensityFactor);
-        const minParticles = 80;
+        const minParticles = 50; // Lowered min for mobile visibility
         const maxParticles = 300;
         const clampedParticles = Math.max(minParticles, Math.min(maxParticles, numParticles));
 
-
         for (let i = 0; i < clampedParticles; i++) {
-            let size = Math.random() * 2.5 + 0.5; // Keep particles small
+            let size = Math.random() * 2.5 + 0.5;
             let x = Math.random() * canvas.width;
             let y = Math.random() * canvas.height;
             let color = particleColors[Math.floor(Math.random() * particleColors.length)];
@@ -256,49 +249,44 @@ const ParticleCanvas = () => {
         }
     }, []);
 
+    const connectParticles = useCallback((ctx, canvasWidth) => {
+        let maxConnectDistance = Math.min(100, canvasWidth * 0.09);
+        const baseLineOpacity = 0.4;
 
-     const connectParticles = useCallback((ctx, canvasWidth) => {
-         let maxConnectDistance = Math.min(100, canvasWidth * 0.09); // Max distance particles connect
-         const baseLineOpacity = 0.4; // Base opacity for lines
+        for (let a = 0; a < particlesArray.current.length; a++) {
+            for (let b = a + 1; b < particlesArray.current.length; b++) {
+                const pa = particlesArray.current[a];
+                const pb = particlesArray.current[b];
+                let distance = Math.hypot(pa.x - pb.x, pa.y - pb.y);
 
-         for (let a = 0; a < particlesArray.current.length; a++) {
-             for (let b = a + 1; b < particlesArray.current.length; b++) {
-                 const pa = particlesArray.current[a];
-                 const pb = particlesArray.current[b];
-                 let distance = Math.hypot(pa.x - pb.x, pa.y - pb.y);
+                if (distance < maxConnectDistance) {
+                    const distanceFactor = 1 - (distance / maxConnectDistance);
+                    const alphaFactor = Math.min(pa.currentAlpha / pa.baseAlpha, pb.currentAlpha / pb.baseAlpha);
+                    const opacity = baseLineOpacity * distanceFactor * alphaFactor;
 
-                 if (distance < maxConnectDistance) {
-                     // Calculate line opacity based on distance and the alpha of the connected particles
-                     const distanceFactor = 1 - (distance / maxConnectDistance);
-                     // Consider the lesser alpha of the two particles for connection visibility
-                     const alphaFactor = Math.min(pa.currentAlpha / pa.baseAlpha, pb.currentAlpha / pb.baseAlpha);
-                     const opacity = baseLineOpacity * distanceFactor * alphaFactor;
-
-                     if (opacity > 0.01) { // Only draw if opacity is noticeable
-                       ctx.strokeStyle = `hsla(210, 50%, 80%, ${opacity})`; // Cool white/blue lines
-                       ctx.lineWidth = 0.6; // Slightly thicker lines
-                       ctx.beginPath();
-                       ctx.moveTo(pa.x, pa.y);
-                       ctx.lineTo(pb.x, pb.y);
-                       ctx.stroke();
-                     }
-                 }
-             }
-         }
-     }, []); // No external dependencies other than the ref
-
+                    if (opacity > 0.01) {
+                        ctx.strokeStyle = `hsla(210, 50%, 80%, ${opacity})`;
+                        ctx.lineWidth = 0.6;
+                        ctx.beginPath();
+                        ctx.moveTo(pa.x, pa.y);
+                        ctx.lineTo(pb.x, pb.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+    }, []);
 
     const animate = useCallback((ctx, canvasWidth, canvasHeight) => {
         if (!ctx) return;
-         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-         particlesArray.current.forEach(particle => {
-             particle.update();
-             particle.draw(ctx);
-         });
-         connectParticles(ctx, canvasWidth);
-         animationFrameId.current = requestAnimationFrame(() => animate(ctx, canvasWidth, canvasHeight));
-     }, [connectParticles]);
-
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        particlesArray.current.forEach(particle => {
+            particle.update();
+            particle.draw(ctx);
+        });
+        connectParticles(ctx, canvasWidth);
+        animationFrameId.current = requestAnimationFrame(() => animate(ctx, canvasWidth, canvasHeight));
+    }, [connectParticles]);
 
     const handleResize = useCallback(() => {
         clearTimeout(resizeTimeout.current);
@@ -306,66 +294,41 @@ const ParticleCanvas = () => {
             const canvas = canvasRef.current;
             if (!canvas) return;
 
-            const isSmallScreen = window.innerWidth < 768;
-             if (canvas.style.display === 'none' && isSmallScreen) {
-                 return; // Already hidden and still small, do nothing
-             }
-
-            canvas.style.display = isSmallScreen ? 'none' : 'block';
-            cancelAnimationFrame(animationFrameId.current); // Stop animation during resize prep
-             animationFrameId.current = null;
-
-            if(isSmallScreen) {
-                 particlesArray.current = []; // Clear particles on small screens to save memory
-                return;
-            }
+            cancelAnimationFrame(animationFrameId.current);
+            animationFrameId.current = null;
 
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
 
             const ctx = canvas.getContext('2d');
             if (ctx) {
-                 initParticles(canvas);
-                 // Ensure particles know the new bounds immediately after init
-                 particlesArray.current.forEach(p => {
+                initParticles(canvas);
+                particlesArray.current.forEach(p => {
                     p.canvasWidth = canvas.width;
                     p.canvasHeight = canvas.height;
-                 });
-                 // Use a minimal delay before restarting animation to allow canvas to redraw cleanly
-                 setTimeout(() => {
-                    if(canvasRef.current) { // Check if component is still mounted
-                        animate(ctx, canvas.width, canvas.height);
-                    }
-                 }, 0);
+                });
+                animate(ctx, canvas.width, canvas.height);
             }
-
-        }, 200); // Increased debounce time slightly
+        }, 200);
     }, [initParticles, animate]);
-
 
     useEffect(() => {
         const canvas = canvasRef.current;
-        let ctx = null;
+        if (!canvas) return;
 
-         // Initial setup based on screen size
-        if (window.innerWidth < 5) {
-             canvas.style.display = "none";
-         } else {
-             canvas.width = window.innerWidth;
-             canvas.height = window.innerHeight;
-             ctx = canvas.getContext('2d');
-             if (ctx) {
-                 initParticles(canvas);
-                 animate(ctx, canvas.width, canvas.height);
-             }
-         }
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const ctx = canvas.getContext('2d');
 
+        if (ctx) {
+            initParticles(canvas);
+            animate(ctx, canvas.width, canvas.height);
+        }
 
         window.addEventListener('resize', handleResize);
         window.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('mouseout', handleMouseOut);
 
-        // Cleanup
         return () => {
             window.removeEventListener('resize', handleResize);
             window.removeEventListener('mousemove', handleMouseMove);
@@ -373,10 +336,12 @@ const ParticleCanvas = () => {
             cancelAnimationFrame(animationFrameId.current);
             clearTimeout(resizeTimeout.current);
         };
-    }, [handleResize, handleMouseMove, handleMouseOut, initParticles, animate]); // Add stable callbacks
+    }, [handleResize, handleMouseMove, handleMouseOut, initParticles, animate]);
 
-    return <canvas ref={canvasRef} id="particle-canvas-main"></canvas>; // Added an ID for easier targeting
+    return <canvas ref={canvasRef} id="particle-canvas-main" />;
 };
+
+
 
 // --- Main App Component ---
 function App() {
