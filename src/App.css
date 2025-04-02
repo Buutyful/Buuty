@@ -333,6 +333,7 @@ img, svg {
     width: 100%;
     text-align: center;
     padding-top: 3rem; /* Space above footer content */
+    padding-bottom: 1rem; /* Add some bottom padding */
     margin-top: auto; /* Crucial for pushing footer down */
     border-top: 1px solid var(--color-border);
 }
@@ -368,9 +369,9 @@ img, svg {
 .contact-button:hover,
 .contact-button:focus-visible {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-md), 0 0 20px -5px var(--button-glow-color, var(--color-primary)); /* Enhanced glow */
-    filter: brightness(1.15); /* Brighter hover */
-    border-color: color-mix(in srgb, var(--button-glow-color, var(--color-primary)) 50%, var(--color-border)); /* Tint border */
+    box-shadow: var(--shadow-md), 0 0 20px -5px var(--button-glow-color, var(--color-primary));
+    filter: brightness(1.15);
+    border-color: color-mix(in srgb, var(--button-glow-color, var(--color-primary)) 50%, var(--color-border));
     outline: none;
 }
 
@@ -379,21 +380,28 @@ img, svg {
 .contact-button.github   { --button-glow-color: hsl(0, 0%, 90%); }
 .contact-button.linkedin { --button-glow-color: hsl(205, 80%, 65%); }
 
-.contact-button .icon { /* Target icons specifically */
-    width: 16px; /* Icons slightly smaller */
+.contact-button .icon {
+    width: 16px;
     height: 16px;
     transition: transform var(--transition-smooth);
-    margin-right: 0.1em; /* Small space after icon if text exists */
-}
-.contact-button:hover .icon {
-   transform: scale(1.15) rotate(-5deg); /* Slight rotate effect on hover */
+    margin-right: 0.1em;
 }
 
+.contact-button:hover .icon {
+    transform: scale(1.15) rotate(-5deg);
+}
+
+.contact-button .icon.icon-mail { /* Fixed selector syntax (removed missing dot) */
+    fill: none;
+    stroke: currentColor;
+}
 
 .copyright {
     font-size: 0.8rem;
     color: var(--color-text-muted);
     opacity: 0.7;
-    margin-top: 2rem; /* Consistent margin */
-    margin-bottom: 0; /* No extra space after copyright */
+    margin: 2rem auto 0; /* Center with auto margins */
+    text-align: center; /* Explicitly center text */
+    width: 100%; /* Ensure it spans full width */
+    display: block; /* Ensure block-level centering */
 }

@@ -35,11 +35,13 @@ const skillCategoryStyles = {
 // --- Icons (Integrated) ---
 const MailIcon = ({ className = "", ...props }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`icon icon-mail ${className}`} {...props}>
+        {/* 1. This path draws the rectangular envelope body */}
         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+
+        {/* 2. THIS POLYLINE DRAWS THE V-SHAPED FLAP */}
         <polyline points="22,6 12,13 2,6"></polyline>
     </svg>
 );
-
 const GitHubIcon = ({ className = "", ...props }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 98 96" fill="currentColor" className={`icon icon-github ${className}`} {...props}>
         <path d="M49 .5C22 .5 0 22.9 0 49.9c0 21.9 14.2 40.6 33.8 47.2 2.5.5 3.4-1.1 3.4-2.5v-9c-13.7 3-16.7-5.8-16.7-5.8-2.3-5.8-5.8-7.3-5.8-7.3-4.7-3.3.4-3.2.4-3.2 5.1.3 7.8 5.3 7.8 5.3 4.6 7.8 12 5.5 14.9 4.2.5-3.3 1.8-5.5 3.3-6.7-11-1.3-22.5-5.5-22.5-24.5 0-5.5 2-10 5.2-13.5-.5-1.3-2.3-6.5.5-13.5 0 0 4.2-1.3 13.8 5.2 4-1.1 8.2-1.6 12.4-1.6 4.2 0 8.4.5 12.4 1.6 9.5-6.5 13.8-5.2 13.8-5.2 2.8 7 1 12.2.5 13.5 3.2 3.5 5.2 8 5.2 13.5 0 19.1-11.6 23.2-22.6 24.5 1.8 1.6 3.5 4.8 3.5 9.7v14.3c0 1.5 1 3 3.4 2.5C83.8 90.5 98 72 98 49.9 98 22.9 76 0.5 49 .5z" />
@@ -347,7 +349,7 @@ const ParticleCanvas = () => {
         let ctx = null;
 
          // Initial setup based on screen size
-        if (window.innerWidth < 768) {
+        if (window.innerWidth < 5) {
              canvas.style.display = "none";
          } else {
              canvas.width = window.innerWidth;
