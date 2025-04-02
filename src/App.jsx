@@ -66,8 +66,7 @@ const Header = ({ name, title, bio }) => (
 );
 
 const SkillsSection = ({ skills }) => (
-    <section className="skills-section" aria-labelledby="skills-heading">
-        <h2 id="skills-heading" className="section-title">Skills</h2>
+    <section className="skills-section" aria-labelledby="skills-heading">        
         <div className="skills-grid">
             {Object.entries(skills).map(([category, skillList]) => {
                  const categoryStyle = skillCategoryStyles[category] || skillCategoryStyles.default;
