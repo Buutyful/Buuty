@@ -1,189 +1,399 @@
-/* === RESET & BASE === */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; scroll-behavior: smooth; }
-body { font-family: 'Outfit', 'Inter', sans-serif; line-height: 1.6; background-color: #030514; color: #bdc1d1; min-height: 100vh; width: 100%; overflow: hidden; position: relative; }
-.portfolio-wrapper.single-screen { width: 100%; height: 100vh; position: relative; overflow: hidden; }
+/* === Import Fonts (Example: Inter) === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
-/* === PARTICLES CANVAS === */
-.particle-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 0; pointer-events: none; transition: opacity 0.5s ease; }
-
-/* === LAYOUT === */
-.page-content { position: relative; z-index: 1; width: 100%; height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 4vh 5vw; /* Adjusted padding slightly */ text-align: center; overflow: hidden; }
-.main-content-area { width: 100%; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; margin-bottom: auto; /* Pushes footer down */ padding-top: max(4vh, 25px); }
-.footer-area { width: 100%; flex-shrink: 0; /* Prevents footer from shrinking */ margin-top: auto; /* Pushes footer down */ padding-bottom: max(3vh, 20px); }
-
-/* === CSS VARIABLES === */
+/* === CSS Variables (Modern Palette) === */
 :root {
-    --color-bg: #030514; --color-primary: hsl(260, 85%, 65%); --color-secondary: hsl(180, 85%, 50%);
-    --color-accent: hsl(330, 90%, 60%); --color-text: #f2f2f5; --color-text-heading: #ffffff;
-    --color-text-muted: #ffffff; --color-border: hsla(225, 15%, 50%, 0.2);
-    --color-card-bg: hsla(240, 20%, 10%, 0.7); --shadow-color: 240deg 30% 5%;
-    --shadow-elevation-low: 0.3px 0.5px 0.7px hsl(var(--shadow-color) / 0.34), 0.4px 0.8px 1px -1.2px hsl(var(--shadow-color) / 0.34), 1px 2px 2.5px -2.5px hsl(var(--shadow-color) / 0.34);
-    --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
-    --transition-fast: 0.2s ease; --transition-medium: 0.3s ease;
+    /* Dark Theme */
+    --color-background: hsl(225, 15%, 10%); /* Slightly darker bg */
+    --color-background-alt: hsl(225, 15%, 16%); /* For cards/sections */
+    --color-text: hsl(220, 25%, 90%); /* Off-white for better contrast */
+    --color-text-muted: hsl(220, 15%, 65%);
+    --color-heading: hsl(0, 0%, 100%);
+    --color-primary: hsl(195, 80%, 65%);   /* Vibrant cyan */
+    --color-secondary: hsl(275, 70%, 70%); /* Vibrant purple */
+    --color-accent: hsl(340, 85%, 68%);    /* Vibrant pink/magenta */
+    --color-border: hsl(225, 15%, 28%);    /* Slightly more visible border */
+    --color-link-hover: hsl(195, 90%, 75%); /* Brighter hover for primary links */
+
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-size-base: 16px; /* Explicit base */
+    --line-height-base: 1.65; /* Slightly increased line height */
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px; /* Slightly less rounded than before */
+    --shadow-sm: 0 2px 5px hsla(0, 0%, 0%, 0.15);
+    --shadow-md: 0 5px 15px hsla(0, 0%, 0%, 0.2);
+
+    --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Material Design standard curve */
+    --transition-bounce: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    /* Glass Effect */
+    --blur-intensity: 10px;
+    --glass-bg-light: hsla(225, 20%, 100%, 0.03); /* More subtle glass */
+    --glass-bg-medium: hsla(225, 20%, 0%, 0.1);
+    --glass-border: hsla(220, 15%, 50%, 0.15);
 }
 
-/* === CONTENT BLOCK STYLING === */
-.main-info, .skills-block, .contact-buttons, .copyright-info { width: 100%; max-width: 750px; margin-left: auto; margin-right: auto; }
-.main-info { margin-bottom: max(4vh, 25px); } /* Adjusted margin */
-.main-name { font-size: clamp(2.2rem, 7vw, 4.5rem); font-weight: 700; letter-spacing: -0.04em; margin-bottom: 0.1em; color: var(--color-text-heading); background: linear-gradient(120deg, var(--color-text-heading) 60%, var(--color-primary) 110%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-.main-title { font-size: clamp(1.1rem, 3.8vw, 1.6rem); font-weight: 400; color: var(--color-text); margin-bottom: 0; opacity: 0.9; }
-
-/* === PROFESSIONAL SKILLS TAG CLOUD === */
-.skills-block { margin-bottom: max(5vh, 35px); width: 100%; }
-.skills-heading { font-size: clamp(1.1rem, 3.5vw, 1.4rem); font-weight: 600; color: var(--color-text-heading); margin-bottom: max(2vh, 20px); text-transform: uppercase; letter-spacing: 0.08em; }
-.skills-cloud { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 12px; max-height: 30vh; /* Limit height and enable scroll */ overflow-y: auto; padding: 5px; /* Add padding for scrollbar */ scrollbar-width: thin; scrollbar-color: hsla(var(--color-secondary)/0.4) transparent; }
-/* --- Scrollbar Styling (Optional) --- */
-.skills-cloud::-webkit-scrollbar { width: 5px; }
-.skills-cloud::-webkit-scrollbar-track { background: transparent; }
-.skills-cloud::-webkit-scrollbar-thumb { background-color: hsla(var(--color-secondary)/0.4); border-radius: 5px; }
-
-/* --- Skill Tag (Gradient Wipe Entrance) --- */
-.skill-tag {
-    background-color: hsla(230, 25%, 18%, 0.7); /* Slightly softer background */
-    color: var(--color-text-muted);
-    border: 1px solid hsla(230, 20%, 35%, 0.5); /* Softer border */
-    border-radius: var(--radius-md);
-    padding: 0.5em 1.0em;
-    font-size: clamp(0.85rem, 2vw, 0.9rem);
-    font-weight: 500;
-    white-space: nowrap;
-    cursor: default;
-    position: relative;
-    overflow: hidden; /* Needed for mask effect */
-    transition: /* Keep hover transitions separate */
-        transform var(--transition-medium) cubic-bezier(0.175, 0.885, 0.32, 1.275),
-        background-color var(--transition-fast),
-        border-color var(--transition-fast),
-        color var(--transition-fast),
-        box-shadow var(--transition-fast);
-
-    /* -- Entrance Animation Setup -- */
-    opacity: 0; /* Start invisible */
-    /* Define the mask properties - Start fully masked from the left */
-    -webkit-mask-image: linear-gradient(to right, black 0%, transparent 0%);
-    mask-image: linear-gradient(to right, black 0%, transparent 0%);
-    -webkit-mask-size: 100% 100%; /* Cover the entire element */
-    mask-size: 100% 100%;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-position: 0 0; /* Start position */
-    mask-position: 0 0;
-
-    /* Apply the combined animation */
-    animation: tag-gradient-wipe 0.6s ease-out forwards;
-    /* Stagger delay comes from inline style in React component */
-    animation-delay: var(--skill-delay, 0s);
+/* === Base Styles === */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-/* Keyframes for the gradient wipe and fade-in */
-@keyframes tag-gradient-wipe {
-    to {
-        opacity: 1; /* Fade in */
-        -webkit-mask-image: linear-gradient(to right, black 100%, transparent 100%);
-        mask-image: linear-gradient(to right, black 100%, transparent 100%);
-    }
+html {
+    font-size: var(--font-size-base);
+    scroll-behavior: smooth;
+    background-color: var(--color-background); /* Set base background here */
 }
 
-
-/* --- Tag Hover Effect (Enhanced Shadow) --- */
-.skill-tag:hover {
-    transform: translateY(-4px) scale(1.05);
-    color: var(--color-text-heading);
-    border-color: hsla(var(--color-secondary) / 0.7); /* Slightly brighter border */
-    background-color: hsla(var(--color-secondary) / 0.15); /* Slightly more intense background */
-    /* Stronger, more colorful shadow */
-    box-shadow: 0 6px 16px hsla(var(--color-secondary) / 0.3);
+body {
+    font-family: var(--font-primary);
+    color: var(--color-text);
+    line-height: var(--line-height-base);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    position: relative; /* Needed if canvas is absolute */
+    min-height: 100vh;
 }
 
-
-/* === FOOTER & BUTTONS === */
-.contact-buttons { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: max(1.5vw, 15px); margin-bottom: max(2vh, 15px); }
-.compact-button { padding: 0.75em 1.6em; font-size: 0.95rem; }
-
-/* --- Base Button Styling --- */
-.button {
-    position: relative; display: inline-flex; align-items: center; /* Vertically center icon and text */ justify-content: center;
-    gap: 0.7em; /* Space between icon and text */
-    border-radius: var(--radius-md); font-weight: 600; text-decoration: none;
-    color: var(--color-text-heading); cursor: pointer; border: 1px solid; overflow: hidden;
-    transition: all var(--transition-fast); z-index: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+h1, h2, h3, h4, h5, h6 {
+    color: var(--color-heading);
+    line-height: 1.3;
+    margin-bottom: 0.75em;
+    font-weight: 600; /* Slightly bolder headings */
 }
 
-/* --- SVG and Span alignment --- */
-.button svg {
-    width: 1.1em; /* Size relative to button font size */
-    height: 1.1em;
-    flex-shrink: 0; /* Prevent icon from shrinking */
-    /* Ensure SVG color matches button text color (stroke for these icons) */
-    stroke: currentColor;
-    fill: none;
-    vertical-align: middle; /* Helps fine-tune alignment */
+p {
+    margin-bottom: 1.2em; /* More space after paragraphs */
+    max-width: 70ch;
 }
 
-.button span {
-    line-height: 1; /* Ensure consistent text height */
-    vertical-align: middle; /* Helps fine-tune alignment */
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color var(--transition-smooth);
 }
 
-/* Hover/Active States */
-.button:hover { transform: translateY(-4px) scale(1.03); box-shadow: var(--shadow-elevation-low), 0 6px 12px rgba(0,0,0,0.15); }
-.button:active { transform: translateY(0px) scale(0.98); }
-
-/* Color Variants (Keep as is) */
-.button.primary { background: linear-gradient(90deg, var(--color-primary) 0%, hsl(275, 80%, 70%) 100%); border-color: var(--color-primary); text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
-.button.secondary { background: hsla(240, 20%, 15%, 0.7); border-color: var(--color-border); color: var(--color-text); backdrop-filter: blur(5px); }
-.button.secondary:hover { background: hsla(240, 20%, 20%, 0.8); border-color: hsla(225, 15%, 50%, 0.5); }
-
-/* Glow Effect (Keep as is) */
-.glow-button::before { content: ''; position: absolute; top: 50%; left: 50%; width: 150%; height: 150%; background: radial-gradient(circle, hsla(0, 0%, 100%, 0.1) 0%, transparent 70%); border-radius: 50%; transform: translate(-50%, -50%) scale(0); transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.6s ease-out; opacity: 0; z-index: -1; }
-.glow-button:hover::before { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
-.glow-button.primary:hover::before { background: radial-gradient(circle, hsla(260, 90%, 75%, 0.35) 0%, transparent 70%); }
-.glow-button.secondary:hover::before { background: radial-gradient(circle, hsla(210, 50%, 70%, 0.2) 0%, transparent 70%); }
-
-/* === COPYRIGHT === */
-.copyright-info { font-size: 0.85rem; color: var(--color-text-muted); opacity: 0.8; margin-top: max(1vh, 10px); }
-
-/* === BASE ANIMATIONS === */
-.anim-fade-in { opacity: 0; animation: anim-fade-in-simple 0.9s ease-out forwards; }
-@keyframes anim-fade-in-simple { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-/* === RESPONSIVE === */
-@media (max-width: 768px) {
-    .skills-cloud { max-height: 35vh; }
-    .skill-tag { font-size: clamp(0.8rem, 1.8vw, 0.85rem); }
-}
-@media (max-width: 480px) {
-    .skills-cloud { max-height: 40vh; gap: 8px 10px; }
-    .skill-tag { padding: 0.4em 0.8em; font-size: 0.8rem; }
-    .button { gap: 0.6em; }
-    .compact-button { padding: 0.65em 1.3em; font-size: 0.9rem; }
+a:hover {
+    color: var(--color-link-hover);
+    /* text-decoration: underline; Keep underline off for cleaner look */
 }
 
-/* === REDUCED MOTION === */
+img, svg {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+}
+
+/* Base icon styling */
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+    fill: currentColor; /* Default fill to text color */
+}
+
+/* Accessibility */
+:focus-visible {
+  outline: 3px solid var(--color-secondary); /* Use secondary color for focus */
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+/* Remove default outline when :focus-visible is supported */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Reduce motion */
 @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    *, *::before, *::after {
-        animation-delay: -1ms !important; animation-duration: 1ms !important;
-        animation-iteration-count: 1 !important; background-attachment: initial !important;
-        scroll-behavior: auto !important; transition-duration: 0s !important;
-        transition-delay: 0s !important;
-    }
-    .particle-canvas { display: none; }
-    .anim-fade-in { opacity: 1; transform: none; animation: none; }
-    .button:hover { transform: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    .glow-button::before, .glow-button:hover::before { display: none; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+   #particle-canvas-main { /* Hide particles if motion reduced */
+       display: none !important;
+   }
+}
 
-    /* --- Reduced Motion Skill Tags --- */
-    .skill-tag {
-        opacity: 1; transform: none; -webkit-mask-image: none; mask-image: none;
-        animation: none; transition: none !important;
+
+/* --- Particle Canvas --- */
+#particle-canvas-main {
+    position: fixed; /* Fixed stays in viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Behind everything */
+    pointer-events: none; /* Allow clicks through */
+    background: transparent; /* Make sure bg is see-through */
+     opacity: 0.65; /* Control overall visibility */
+     /* transition: opacity 0.5s ease; Optional fade */
+}
+
+
+/* --- Layout Wrappers --- */
+.portfolio-container {
+    position: relative; /* Contains the canvas and content */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column; /* Ensure footer pushed down */
+}
+
+.content-wrapper {
+    position: relative; /* Above canvas */
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Start content from top */
+    min-height: 100vh;
+    padding: 5rem 2rem 4rem; /* Top padding, horiz padding, bottom padding */
+    max-width: 960px; /* Slightly narrower max width */
+    margin: 0 auto;
+    width: 100%;
+    gap: 3.5rem; /* Increased space between major sections */
+}
+
+@media (max-width: 768px) {
+    .content-wrapper {
+        padding: 3rem 1rem 3rem;
+        gap: 2.5rem;
     }
-    .skill-tag:hover {
-        transform: none;
-        background-color: hsla(230, 25%, 18%, 0.7); /* Base background */
-        color: var(--color-text-muted); /* Base text color */
-        border-color: hsla(230, 20%, 35%, 0.5); /* Base border */
-        box-shadow: none; /* Remove hover shadow */
+}
+
+/* --- Intro Animation --- */
+.content-wrapper > header,
+.content-wrapper > main,
+.content-wrapper > footer {
+    opacity: 0;
+    transform: translateY(25px);
+    animation: fadeInSlideUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.content-wrapper > header { animation-delay: 0.15s; }
+.content-wrapper > main { animation-delay: 0.30s; }
+.content-wrapper > footer { animation-delay: 0.45s; }
+
+@keyframes fadeInSlideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
+}
+
+/* --- Header Info --- */
+.header-info {
+    text-align: center;
+    max-width: 720px;
+    margin-bottom: 0; /* Gap handled by content-wrapper */
+}
+
+.name {
+    font-size: clamp(2.4rem, 7vw, 4rem); /* Larger, responsive name */
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    /* Use a more subtle gradient, leaning towards primary */
+    background: linear-gradient(60deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 60%, var(--color-secondary) 40%));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 0.35em;
+}
+
+.title {
+    font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+    font-weight: 300;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.5em;
+}
+
+.bio {
+    font-size: clamp(1rem, 2.5vw, 1.15rem);
+    color: var(--color-text);
+    opacity: 0.9;
+    line-height: var(--line-height-base);
+}
+
+
+/* --- Main Content Area --- */
+.main-content {
+    width: 100%;
+}
+
+
+/* --- Skills Section --- */
+.skills-section {
+    width: 100%;
+    background: var(--glass-bg-medium); /* Darker glass */
+    backdrop-filter: blur(var(--blur-intensity));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem; /* More padding */
+    box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 768px) {
+    .skills-section {
+        padding: 1.5rem;
+        background: var(--color-background-alt); /* Fallback for less capable browsers */
+        backdrop-filter: none;
+    }
+}
+
+.section-title {
+    text-align: center;
+    font-size: clamp(1.5rem, 5vw, 1.9rem);
+    font-weight: 600;
+    color: var(--color-heading);
+    margin-bottom: 2.5rem; /* More space below title */
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.skills-grid {
+    display: grid;
+    /* Adjust minmax for better fit, allow fewer columns on smaller screens */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: 2rem 1.5rem; /* Row gap, Column gap */
+}
+
+.skill-category {
+    /* No extra styles needed unless for specific layout */
+}
+
+.category-title {
+    font-size: 0.9rem; /* Slightly smaller category titles */
+    font-weight: 700; /* Bolder */
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid; /* Thinner border */
+    border-bottom-color: inherit; /* Will be overridden by inline style */
+    display: inline-block;
+    opacity: 0.9;
+}
+
+.skills-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem; /* Consistent gap */
+}
+
+.skill-tag {
+    display: inline-block;
+    padding: 0.6em 1.1em;
+    font-size: 0.8rem; /* Smaller tags */
+    font-weight: 500; /* Medium weight */
+    line-height: 1; /* Ensure consistent height */
+    border-radius: var(--radius-md);
+    background-color: var(--skill-bg-color); /* Use CSS variable */
+    /* Border less prominent */
+    border: 1px solid color-mix(in srgb, var(--skill-border-color) 50%, transparent);
+    color: color-mix(in srgb, var(--skill-border-color) 90%, white); /* Tint text color slightly */
+    opacity: 0;
+    transform: scale(0.95) translateY(5px);
+    animation: popInTag 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: var(--skill-delay);
+    transition: transform 0.2s ease-out, background-color 0.2s ease-out, border-color 0.2s ease-out;
+    cursor: default;
+}
+
+.skill-tag:hover {
+   transform: scale(1.05) translateY(0);
+   background-color: color-mix(in srgb, var(--skill-bg-color) 80%, var(--skill-border-color) 20%);
+   border-color: var(--skill-border-color); /* Make border fully visible */
+}
+
+
+@keyframes popInTag {
+     from {
+         opacity: 0;
+         transform: scale(0.95) translateY(5px);
+     }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+
+/* --- Footer --- */
+.footer {
+    width: 100%;
+    text-align: center;
+    padding-top: 3rem; /* Space above footer content */
+    margin-top: auto; /* Crucial for pushing footer down */
+    border-top: 1px solid var(--color-border);
+}
+
+.contact-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.2rem; /* Tighter gap for buttons */
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem; /* More space before copyright */
+}
+
+.contact-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1.4rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--color-heading);
+    background-color: var(--color-background-alt);
+    border: 1px solid var(--color-border);
+    transition: all var(--transition-smooth);
+    box-shadow: var(--shadow-sm);
+    white-space: nowrap; /* Prevent text wrap */
+}
+
+.contact-button:hover,
+.contact-button:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md), 0 0 20px -5px var(--button-glow-color, var(--color-primary)); /* Enhanced glow */
+    filter: brightness(1.15); /* Brighter hover */
+    border-color: color-mix(in srgb, var(--button-glow-color, var(--color-primary)) 50%, var(--color-border)); /* Tint border */
+    outline: none;
+}
+
+/* Glow Colors per Button */
+.contact-button.email    { --button-glow-color: var(--color-accent); }
+.contact-button.github   { --button-glow-color: hsl(0, 0%, 90%); }
+.contact-button.linkedin { --button-glow-color: hsl(205, 80%, 65%); }
+
+.contact-button .icon { /* Target icons specifically */
+    width: 16px; /* Icons slightly smaller */
+    height: 16px;
+    transition: transform var(--transition-smooth);
+    margin-right: 0.1em; /* Small space after icon if text exists */
+}
+.contact-button:hover .icon {
+   transform: scale(1.15) rotate(-5deg); /* Slight rotate effect on hover */
+}
+
+
+.copyright {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    opacity: 0.7;
+    margin-top: 2rem; /* Consistent margin */
+    margin-bottom: 0; /* No extra space after copyright */
 }
