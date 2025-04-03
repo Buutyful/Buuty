@@ -239,8 +239,8 @@ const ParticleCanvas = () => {
         ];
         const particleDensityFactor = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--particle-density')) || 8000;
         const numParticles = Math.floor((canvas.width * canvas.height) / particleDensityFactor);
-        const minParticles = 50; // Lowered min for mobile visibility
-        const maxParticles = 300;
+        const minParticles = 110; // Lowered min for mobile visibility
+        const maxParticles = 310;
         const clampedParticles = Math.max(minParticles, Math.min(maxParticles, numParticles));
 
         for (let i = 0; i < clampedParticles; i++) {
