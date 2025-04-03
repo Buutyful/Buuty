@@ -1,17 +1,18 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import './App.css';
 
-// --- Portfolio Data (Integrated) ---
+// --- Portfolio Data (Updated with 2 Categories) ---
 const portfolioData = {
     name: "Riccardo Mantelli",
     title: "Software Developer",
     bio: "Backend Developer specializing in C# and ASP.NET Core, crafting scalable and clean solutions. Passionate about robust architecture and elegant code. Let's connect!",
     skills: {
         "Core Languages": ["C#", "SQL", "JavaScript", "C"],
-        "Frameworks & Platforms": [".NET", "ASP.NET Core", "React"],
+        "Frameworks & Platforms": [".NET", "ASP.NET Core", ".NET Aspire", "Blazor", "React"],
         "Databases": ["SQL Server", "PostgreSQL", "SQLite", "Redis", "MongoDB", "Azure Tables", "MinIO", "AWS S3"],
-        "DevOps & Tools": ["Git", "Docker"], 
-        "Methodologies & Concepts": ["SOLID", "Design Patterns", "DSA", "REST APIs", "Unit Testing", "Integration Testing", "DDD", "Clean Architecture"], 
+        "Software Design": ["SOLID", "OOP", "FP", "Design Patterns", "DSA", "Testing"],
+        "System Architecture": ["Web", "REST APIs", "Messaging", "Caching", "Event-Driven", "Distributed Systems",],
+        "DevOps & Tools": ["Git", "Docker", "Monitoring"]
     },
     contact: {
         email: "mantelli96@libero.it",
@@ -21,16 +22,19 @@ const portfolioData = {
     }
 };
 
-//  skill category colors here for easy access
+// --- Skill Category Styles (Updated with 2 Categories) ---
 const skillCategoryStyles = {
-    "Core Languages": { color: "hsl(195, 75%, 60%)", bg: "hsla(195, 75%, 60%, 0.15)" },
-    "Frameworks & Platforms": { color: "hsl(265, 75%, 65%)", bg: "hsla(265, 75%, 65%, 0.15)" },
-    "Databases": { color: "hsl(340, 80%, 65%)", bg: "hsla(340, 80%, 65%, 0.15)" },
-    "DevOps & Tools": { color: "hsl(145, 65%, 55%)", bg: "hsla(145, 65%, 55%, 0.15)" },
-    "Methodologies & Concepts": { color: "hsl(215, 70%, 60%)", bg: "hsla(215, 70%, 60%, 0.15)" },
-    "default": { color: "hsl(0, 0%, 80%)", bg: "hsla(0, 0%, 80%, 0.1)" }
-};
+    // Existing Categories
+    "Core Languages": { color: "hsl(195, 75%, 60%)", bg: "hsla(195, 75%, 60%, 0.15)" },         // Teal/Blue
+    "Frameworks & Platforms": { color: "hsl(265, 75%, 65%)", bg: "hsla(265, 75%, 65%, 0.15)" }, // Purple
+    "Databases": { color: "hsl(340, 80%, 65%)", bg: "hsla(340, 80%, 65%, 0.15)" },              // Pink/Red
+    "DevOps & Tools": { color: "hsl(145, 65%, 55%)", bg: "hsla(145, 65%, 55%, 0.15)" },         // Green
+    "Software Design": { color: "hsl(215, 70%, 60%)", bg: "hsla(215, 70%, 60%, 0.15)" },        // Blueish    
+    "System Architecture": { color: "hsl(35, 85%, 60%)", bg: "hsla(35, 85%, 60%, 0.15)" },      // Orange/Gold
 
+    // --- Default ---
+    "default": { color: "hsl(0, 0%, 80%)", bg: "hsla(0, 0%, 80%, 0.1)" } // Grey
+};
 
 // --- Icons (Integrated) ---
 const MailIcon = ({ className = "", ...props }) => (
@@ -358,8 +362,7 @@ function App() {
                 />
 
                 <main className="main-content">
-                    <SkillsSection skills={portfolioData.skills} />
-                    {/* Potential future sections: Projects, Experience */}
+                    <SkillsSection skills={portfolioData.skills} />                    
                 </main>
 
                 <ContactFooter
