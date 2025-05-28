@@ -1,18 +1,18 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import './App.css';
 
-// --- Portfolio Data (Updated with 2 Categories) ---
+// --- Portfolio Data ---
 const portfolioData = {
     name: "Riccardo Mantelli",
     title: "Software Developer",
-    bio: "Backend Developer specializing in C# and ASP.NET Core, crafting scalable and clean solutions. Passionate about robust architecture and elegant code. Let's connect!",
+    bio: "Backend Developer specializing in C# and ASP.NET.\nI write scalable and clean software.\nLet's connect!",
     skills: {
-        "Core Languages": ["C#", "SQL", "JavaScript", "C"],
-        "Frameworks & Platforms": [".NET", "ASP.NET Core", ".NET Aspire", "Blazor", "React"],
-        "Databases": ["SQL Server", "PostgreSQL", "SQLite", "Redis", "MongoDB", "Azure Tables", "MinIO", "AWS S3"],
-        "Software Design": ["SOLID", "OOP", "FP", "Design Patterns", "DSA", "Testing"],
-        "System Architecture": ["Web", "REST APIs", "Messaging", "Caching", "Event-Driven", "Distributed Systems",],
-        "DevOps & Tools": ["Git", "Docker", "Monitoring"]
+        "Languages": ["C#", "SQL", "JS", "C"],
+        "My Stack of Choice": ["ASP.NET", ".NET Aspire", "React"],
+        "Databases": ["SQL Server", "PostgreSQL", "SQLite", "Redis"],
+        "Software Design": ["SOLID", "OOP", "FP", "Design Patterns", "DSA"],
+        "System Architecture": ["Web", "REST APIs", "Distributed Systems",],
+        "DevOps & Tools": ["Git", "Docker", "CI/CD", "GitHub Actions", "Linux"]
     },
     contact: {
         email: "mantelli96@libero.it",
@@ -22,11 +22,11 @@ const portfolioData = {
     }
 };
 
-// --- Skill Category Styles (Updated with 2 Categories) ---
+// --- Skill Category Styles ---
 const skillCategoryStyles = {
     // Existing Categories
-    "Core Languages": { color: "hsl(195, 75%, 60%)", bg: "hsla(195, 75%, 60%, 0.15)" },         // Teal/Blue
-    "Frameworks & Platforms": { color: "hsl(265, 75%, 65%)", bg: "hsla(265, 75%, 65%, 0.15)" }, // Purple
+    "Languages": { color: "hsl(195, 75%, 60%)", bg: "hsla(195, 75%, 60%, 0.15)" },         // Teal/Blue
+    "My Stack of Choice": { color: "hsl(265, 75%, 65%)", bg: "hsla(265, 75%, 65%, 0.15)" }, // Purple
     "Databases": { color: "hsl(340, 80%, 65%)", bg: "hsla(340, 80%, 65%, 0.15)" },              // Pink/Red
     "DevOps & Tools": { color: "hsl(145, 65%, 55%)", bg: "hsla(145, 65%, 55%, 0.15)" },         // Green
     "Software Design": { color: "hsl(215, 70%, 60%)", bg: "hsla(215, 70%, 60%, 0.15)" },        // Blueish    
@@ -62,6 +62,7 @@ const LinkedInIcon = ({ className = "", ...props }) => (
 // --- Sub-Components (Defined in App.jsx) ---
 
 const Header = ({ name, title, bio }) => (
+    
     <header className="header-info" role="banner">
         <h1 className="name">{name}</h1>
         <p className="title">{title}</p>
@@ -344,8 +345,6 @@ const ParticleCanvas = () => {
 
     return <canvas ref={canvasRef} id="particle-canvas-main" />;
 };
-
-
 
 // --- Main App Component ---
 function App() {
